@@ -1,0 +1,16 @@
+name = "uni-mail-whatsapp"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+# Check for new emails every 1 minute
+[triggers]
+crons = ["* * * * *"]
+
+# KV namespace for storing last-checked timestamp
+[[kv_namespaces]]
+binding = "MAIL_STATE"
+id = "11a20e2d97e8499483c440180a414d62"
+
+[vars]
+GREENAPI_API_URL = "https://7107.api.greenapi.com"
+GREENAPI_ID_INSTANCE = "710722706721"
