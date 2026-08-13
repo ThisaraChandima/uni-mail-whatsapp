@@ -262,6 +262,26 @@ export default {
 
   // HTTP handler: health check & webhooks
   async fetch(request, env) {
+    // Dashboard API: return JSON status when called from AutoHub
+    if (request.headers.get("X-Dashboard") === "true") {
+      try {
+        const lastChecked = await env.MAIL_STATE.get("lastChecked") || "0";
+        return new Response(JSON.stringify({
+          lastCheck: lastChecked !== "0" ? new Date(parseInt(lastChecked)).toISOString() : null,
+          status: "active",
+          checkInterval: "1 minute"
+        }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message, status: "error" }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+    }
+
     if (request.method === "GET") {
       return new Response("✅ uni-mail-whatsapp is running! Emails are checked every minute.", {
         status: 200,
